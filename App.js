@@ -8,6 +8,7 @@ import {
   Animated,
   Button
 } from "react-native";
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 import { dataBase } from "./data/convertedData";
 
@@ -24,7 +25,24 @@ const JSONFormat=[{"Sequence":"1","Item_ID":"CC1-T22","Zoho Project":"CarIQ Core
 {"Sequence":"10","Item_ID":"CC1-T52","Zoho Project":"CarIQ Core Products","Product":"BAGIC","Customer":"","Type":"Feature","Task Name":"DriveSmart - Missing entries in the report- https://admin.drivesmart.co.in/","Task Owner":"Nitin Umdale","Priority":"High","Custom Status":"In Progress"}];
 
 
-
+function removeEmptyString(object)
+{
+  var newObj = object;
+  const keys=Object.keys(newObj[0]);
+   for(let i=0;i<newObj.length;i++)
+   {
+     
+        for(let k=0;k<keys.length;k++)
+        {
+          if(newObj[i][keys[k]]=='')
+          {
+            newObj[i][keys[k]]='NA';
+          }
+       }
+     
+   }  
+  return newObj;
+}
 
 function immutableMove(arr, from, to) {
   return arr.reduce((prev, current, idx, self) => {
@@ -53,7 +71,7 @@ export default class App extends React.Component {
   state = {
     dragging: false,
     draggingIdx: -1,
-    data:dataBase,
+    data:removeEmptyString(dataBase),
     keys:JSON.stringify(Object.keys(dataBase[0]))
     // data: Array.from(Array(200), (_, i) => {
     //   colorMap[i] = getRandomColor();
@@ -67,6 +85,8 @@ export default class App extends React.Component {
   rowHeight = 0;
   currentIdx = -1;
   active = false;
+
+
 
   constructor(props) {
     super(props);
@@ -193,6 +213,7 @@ export default class App extends React.Component {
   //return str;
 }
 
+
  downloadToCSV=(str)=>
  {
    //Download the file as CSV
@@ -231,9 +252,17 @@ console.log("@@@@@@@@@@@@@@@@@@@@@@",data);
         
 
         <View {...(noPanResponder ? {} : this._panResponder.panHandlers)}>
-          <Text style={{ fontSize: 25,cursor:'pointer' }}>@</Text>
+          <Text style={{ fontSize: 15,cursor:'pointer', marginRight:10 }}>
+          <Icon  name="bars" backgroundColor="#3b5998"
+          color="grey"
+          size={20}
+          
+          >
+  </Icon>
+
+          </Text>
         </View>
-        <Text numberOfLines={1} style={{ fontSize: 25, textAlign: "left", flex: 1 }}>
+        <Text numberOfLines={1} style={{ fontSize: 15, textAlign: "left", flex: 1 }}>
         {item['Sequence']+'\t| ' + item['Item_ID']+'\t| '+item['Product']+'\t| '+item['Priority']+'\t| '+item['Type']+'\t| '+item['Task Name']+'\t| '+item['Task Owner']}
         </Text>
       </View>
